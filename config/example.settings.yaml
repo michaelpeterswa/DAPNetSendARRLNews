@@ -1,2 +1,3 @@
 ---
   news-endpoint: "https://www.arrl.org/news/rss"
+  cache-ttl: 240
