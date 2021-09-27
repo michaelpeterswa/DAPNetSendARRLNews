@@ -1,3 +1,17 @@
 ---
+  callsignNames: [
+    ""
+  ]
+  transmitterGroupNames: [
+    ""
+  ]
+
   news-endpoint: "https://www.arrl.org/news/rss"
-  cache-ttl: 240
+  cache-ttl: 720
+  delivery-delay: 60
+  clean-interval: "@every 2h0m0s"
+  check-interval: "@every 0h0m20s"
+
+  dapnet-username: ""
+  dapnet-password: ""
+  dapnet-callsign: ""
