@@ -1,6 +1,7 @@
 package main
 
 import (
+	dapnet "github.com/michaelpeterswa/godapnet"
 	"go.uber.org/zap"
 )
 
@@ -10,4 +11,5 @@ func init() {
 	logger, _ = zap.NewProduction()
 	defer logger.Sync()
 	logger.Info("DAPNetSendARRLNews is initializing...")
+	dapnet.InitializeLogger(logger)
 }

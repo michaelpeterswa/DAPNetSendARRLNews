@@ -27,12 +27,13 @@ func (hc *HashCache) buildCache(feed *gofeed.Feed) {
 	}
 }
 
-func (hc *HashCache) checkCurrentArticles(p *gofeed.Parser) {
+func (hc *HashCache) checkCurrentArticles(p *gofeed.Parser) error {
 	queue := list.New()
 
 	feed, err := p.ParseURL(settings.NewsEndpoint)
 	if err != nil {
 		logger.Error("Couldn't create feed object from URL", zap.Error(err))
+		return err
 	}
 
 	for _, article := range feed.Items {
@@ -66,6 +67,7 @@ func (hc *HashCache) checkCurrentArticles(p *gofeed.Parser) {
 			logger.Info("Delivery Queue is Empty...")
 		}
 	}
+	return nil
 }
 
 func main() {
@@ -96,11 +98,17 @@ func main() {
 	feed, err := fp.ParseURL(settings.NewsEndpoint)
 	if err != nil {
 		logger.Error("Couldn't create feed object from URL", zap.Error(err))
+	} else {
+		hc.buildCache(feed)
 	}
-	hc.buildCache(feed)
 
 	c := cron.New()
-	c.AddFunc(settings.CheckInterval, func() { hc.checkCurrentArticles(fp) })
+	c.AddFunc(settings.CheckInterval, func() {
+		err := hc.checkCurrentArticles(fp)
+		if err != nil {
+			logger.Info("checkCurrentArticles() failed... see above")
+		}
+	})
 	c.AddFunc(settings.CleanInterval, func() { hc.Clean() })
 	c.Start()
 	select {}
